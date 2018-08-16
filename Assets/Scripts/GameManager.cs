@@ -7,6 +7,7 @@ public class GameManager : MonoBehaviour {
     public static GameManager gameManager = null;
     Vector2 startingTile;
     Vector2 tileDiff;
+    Vector2 gridSize;
 
     void Awake()
     {
@@ -38,5 +39,15 @@ public class GameManager : MonoBehaviour {
     public Vector2 getTileDiff()
     {
         return this.tileDiff;
+    }
+
+    public void setGridSize(Vector2 size)
+    {
+        this.gridSize = size;
+    }
+
+    public Vector2 getGridSize()
+    {
+        return this.gridSize;
     }
 }

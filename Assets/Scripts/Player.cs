@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Assets.Scripts;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,7 +10,9 @@ public class Player : MonoBehaviour
 
     GameManager gameManager;
     Vector2 move;
-    
+    bool isFinished = false;
+    bool isStarted = false;
+
     void Start()
     {
         this.gameManager = GameManager.gameManager;
@@ -18,33 +21,35 @@ public class Player : MonoBehaviour
         instance.transform.SetParent(transform);
     }
 
-    public void moveUp()
+    public bool moveUp()
     {
-        this.translatePlayer(Direction.UP);
+        return this.translatePlayer(Direction.UP);
     }
 
-    public void moveDown()
+    public bool moveDown()
     {
-        this.translatePlayer(Direction.DOWN);
+        return this.translatePlayer(Direction.DOWN);
     }
 
-    public void moveLeft()
+    public bool moveLeft()
     {
-        this.translatePlayer(Direction.LEFT);
+        return this.translatePlayer(Direction.LEFT);
     }
 
-    public void moveRight()
+    public bool moveRight()
     {
-        this.translatePlayer(Direction.RIGHT);
+        return this.translatePlayer(Direction.RIGHT);
     }
 
-    void translatePlayer(Direction direction)
+    bool translatePlayer(Direction direction)
     {
         Vector2 translate = this.getTranslation(direction);
         if (canMove(translate))
         {
             transform.Translate(translate);
+            return true;
         }
+        return false;
     }
     Vector2 getTranslation(Direction direction)
     {
@@ -62,11 +67,11 @@ public class Player : MonoBehaviour
     bool canMove(Vector2 translate)
     {
         Vector2 newPosition = (Vector2)transform.position + translate;
-        ContactFilter2D contactFilter = new ContactFilter2D();
 
-        Collider2D cols = Physics2D.OverlapCircle(newPosition, (float)0.1, 1 << LayerMask.NameToLayer("Walls"));
+        Collider2D wall = Physics2D.OverlapCircle(newPosition, (float)0.1, 1 << LayerMask.NameToLayer("Walls"));
+        Collider2D floor = Physics2D.OverlapCircle(newPosition, (float)0.1, 1 << LayerMask.NameToLayer("Floor"));
 
-        return !cols;
+        return !wall && floor;
     }
 
     public List<Direction> getPossibleMoves()
@@ -85,6 +90,32 @@ public class Player : MonoBehaviour
         return possileMoves;
     }
 
+    public PlayerSurroundings getSurroundings()
+    {
+        PlayerSurroundings playerSurroundings = new PlayerSurroundings();
+
+
+        foreach (Direction direction in System.Enum.GetValues(typeof(Direction)))
+        {
+            Collider2D finish = Physics2D.OverlapCircle((Vector2)transform.position + getTranslation(direction), (float)0.1, 1 << LayerMask.NameToLayer("Finish"));
+            if (finish)
+            {
+                playerSurroundings.finish = direction;
+            }
+            else if (!canMove(getTranslation(direction)))
+            {
+                playerSurroundings.walls.Add(direction);
+            }
+            else
+            {
+                playerSurroundings.empty.Add(direction);
+            }
+
+        }
+
+        return playerSurroundings;
+    }
+
     public void resetPosition()
     {
         Vector3 startingPosition = gameManager.getStartingTile();
@@ -93,14 +124,23 @@ public class Player : MonoBehaviour
 
     }
 
-
-    void OnCollisionEnter2D(Collision2D col)
-    {
-        Debug.Log("OnCollisionEnter2D");
-    }
-
     void OnTriggerEnter2D(Collider2D col)
     {
-        Debug.Log("OnTriggerEnter2D");
+        if (col.gameObject.tag == "Finish")
+        {
+            isFinished = true;
+            isStarted = false;
+        }
+    }
+
+    public bool isMoveFinished()
+    {
+        return isFinished;
+    }
+
+    void startMove()
+    {
+        isFinished = false;
+        isStarted = true;
     }
 }

@@ -1,8 +1,6 @@
-﻿interface FindPathInterface
-{
-    //0-up, 1-right, 2-down, 3-left
-    void getNextMoveDirection();
+﻿public enum Direction {
+    UP=0,
+    RIGHT=1,
+    DOWN=2,
+    LEFT=3
 }
-
-
-public enum Direction { UP, RIGHT, DOWN, LEFT }

@@ -25,7 +25,8 @@ namespace Assets {
         float yTranslation; 
         void Start() {
             this.gameManager = GameManager.gameManager;
-            
+            this.gameManager.setGridSize(this.gridSize);
+
             calculateFloorDimesions();
             this.xTranslation = transform.position.x - gridSize.x / 2 + floorObject.GetComponent<Renderer>().bounds.size.x / 2;
             this.yTranslation = transform.position.y - gridSize.y / 2 + floorObject.GetComponent<Renderer>().bounds.size.y / 2;

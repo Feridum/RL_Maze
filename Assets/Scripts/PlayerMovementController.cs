@@ -1,38 +1,44 @@
-﻿using System.Collections;
+﻿using Assets.Scripts;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerMovementController : MonoBehaviour, FindPathInterface {
+public class PlayerMovementController : MonoBehaviour {
 
     // Use this for initialization
-    Player playerMovement;
-
+    Player player;
+    
     public void getNextMoveDirection()
     {
         if (Input.GetKeyUp(KeyCode.UpArrow))
         {
-            playerMovement.moveUp();
+            player.moveUp();
         }
         if (Input.GetKeyUp(KeyCode.DownArrow))
         {
-            playerMovement.moveDown();
+            player.moveDown();
         }
         if (Input.GetKeyUp(KeyCode.LeftArrow))
         {
-            playerMovement.moveLeft();
+            player.moveLeft();
         }
         if (Input.GetKeyUp(KeyCode.RightArrow))
         {
-            playerMovement.moveRight();
+            player.moveRight();
         }
         if (Input.GetKeyUp(KeyCode.R))
         {
-            playerMovement.resetPosition();
+            player.resetPosition();
         }
     }
 
     void Start () {
-        playerMovement = transform.parent.gameObject.GetComponent<Player>();
+        player = transform.parent.gameObject.GetComponent<Player>();
+        float[,] test = new float[,] { { 1, 2}, { 3, 4} };
+
+        FileReader file = new FileReader();
+        //file.saveToFile(test);
+        file.readFromFile();
 	}
 
     void Update()
