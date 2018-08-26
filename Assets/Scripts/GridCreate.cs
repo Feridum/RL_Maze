@@ -6,12 +6,6 @@ namespace Assets {
     public class GridCreate : MonoBehaviour {
 
         [SerializeField]
-        private Vector2 gridSize;
-
-        [SerializeField]
-        private Vector2 gridOffset;
-
-        [SerializeField]
         private GameObject floorObject;
 
         [SerializeField]
@@ -20,37 +14,36 @@ namespace Assets {
         [SerializeField]
         private GameObject finishObject;
 
+
+        private Vector2 gridSize;
+        private Vector2 gridOffset;
         GameManager gameManager;
         float xTranslation;
         float yTranslation; 
         void Start() {
             this.gameManager = GameManager.gameManager;
-            this.gameManager.setGridSize(this.gridSize);
+            gridSize = gameManager.getGridSize();
+            gridOffset = gameManager.getGridOffset();
 
             calculateFloorDimesions();
             this.xTranslation = transform.position.x - gridSize.x / 2 + floorObject.GetComponent<Renderer>().bounds.size.x / 2;
-            this.yTranslation = transform.position.y - gridSize.y / 2 + floorObject.GetComponent<Renderer>().bounds.size.y / 2;
-            createBoard();
+            this.yTranslation = transform.position.y - gridSize.y / 2 - floorObject.GetComponent<Renderer>().bounds.size.y / 2;
             this.setBoardConstants();
+
+            createBoard();
             this.createPlayer();
             this.createFinish();
         }
 
         void setBoardConstants()
         {
-            float x0 = getXPosition(0);
-            float x1 = getXPosition(1);
-
-            float y0 = getYPosition((int)gridSize.y-1);
-            float y1 = getYPosition((int)gridSize.y-2);
-
-            this.gameManager.setStartingTile(new Vector2(x0, y0));
-            this.gameManager.setTileDiff(new Vector2(x1 - x0, y1 - y0));
+            this.gameManager.setTranslations(new Vector2(xTranslation, yTranslation));
+            gameManager.initializeParametrs();
         }
 
         void createBoard()
         {
-            for(int y = (int)gridSize.y -1; y >=0; y--)
+            for(int y = 0; y < gridSize.y; y++)
             {
                 for(int x = 0; x<gridSize.x; x++)
                 {
@@ -62,21 +55,13 @@ namespace Assets {
         
         void placeBlockOnPosition(int x, int y)
         {
-            float xPos = getXPosition(x);
-            float yPos = getYPosition(y);
+            float xPos = gameManager.getXPosition(x);
+            float yPos = gameManager.getYPosition(y);
 
             Instantiate(floorObject, new Vector2(xPos, yPos), Quaternion.identity);
         }
 
-        float getXPosition(int x)
-        {
-            return x + gridOffset.x * x + this.xTranslation;
-        }
-
-        float getYPosition(int y)
-        {
-            return y + gridOffset.y * y + this.yTranslation;
-        }
+       
 
         private void calculateFloorDimesions()
         {
@@ -90,19 +75,19 @@ namespace Assets {
 
         private void OnDrawGizmos()
         {
-            Gizmos.DrawWireCube(transform.position, gridSize);
+            GameManager daBoss = (GameManager)FindObjectOfType(typeof(GameManager));
+            Gizmos.DrawWireCube(transform.position, daBoss.getGridSize());
         }
 
         private void createPlayer()
         {
-            Vector3 position = this.gameManager.getStartingTile();
-            position.z = -1;
+            Vector3 position = new Vector3(gameManager.getXPosition(0), gameManager.getYPosition(0), -1);
             Instantiate(playerObject,position, Quaternion.identity);
         }
 
         private void createFinish()
         {
-            Vector3 position = new Vector3(getXPosition((int)gridSize.x-1), getYPosition(0), -1);
+            Vector3 position = new Vector3(gameManager.getXPosition((int)gridSize.x-1), gameManager.getYPosition((int)gridSize.y - 1), -1);
             Instantiate(finishObject, position, Quaternion.identity);
         }
     }

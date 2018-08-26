@@ -16,6 +16,9 @@ public class Simple_RL : MonoBehaviour
     Vector2 gridSize;
     float learningRate = 0.6f;
     bool learnStart = false;
+    float requiredLoopsFactor = 0.8f;
+    int requiredLoops = 0;
+    bool fileSaved = false; 
     void Start()
     {
         player = transform.parent.gameObject.GetComponent<Player>();
@@ -33,22 +36,38 @@ public class Simple_RL : MonoBehaviour
     {
         if (player.isMoveFinished())
         {
-            FileReader file = new FileReader();
-            file.saveToFile(R, "r.txt");
-            file.saveToFile(Q, "q.txt");
-            learnStart = false;
+            requiredLoops--;
+            if(requiredLoops > 0)
+            {
+                player.placeOnRandomPosition(true);
+                currentPosition = gameManager.playerStartPosition;
+                player.startMove();
+            }
+            else
+            {
+                learnStart = false;
+                if (fileSaved)
+                {
+                    FileReader file = new FileReader();
+                    file.saveToFile(R, "r.txt");
+                    file.saveToFile(Q, "q.txt");
+                    fileSaved = true;
+                }
+                player.startMove();
+            }
         }
 
 
         if (learnStart)
         {
             discoverMaze();
-
             getNextMoveDirection();
+            fileSaved = false;
         }
 
         if (Input.GetKeyUp(KeyCode.S))
         {
+            requiredLoops = (int)(requiredLoopsFactor * gameManager.emptyPlacesNumber);
             learnStart = true;
         }
     }
@@ -149,9 +168,13 @@ public class Simple_RL : MonoBehaviour
         float[] QRow = new float[4];
         for (int i = 0; i < 4; i++)
         {
-            if (R[getPositionInArray(currentPosition), i] == -100)
+            float reward = R[getPositionInArray(currentPosition), i];
+            if (reward == -100)
             {
                 QRow[i] = -1000;
+            }else if(reward == 100)
+            {
+                QRow[i] = 100;
             }
             else
             {

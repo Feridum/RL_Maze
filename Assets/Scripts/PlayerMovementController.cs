@@ -28,7 +28,7 @@ public class PlayerMovementController : MonoBehaviour {
         }
         if (Input.GetKeyUp(KeyCode.R))
         {
-            player.resetPosition();
+            player.placeOnRandomPosition(false);
         }
     }
 

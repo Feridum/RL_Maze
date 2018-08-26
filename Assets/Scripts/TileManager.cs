@@ -20,11 +20,13 @@ public class TileManager : MonoBehaviour {
     private void OnMouseUp()
     {
         CreateWall(new Vector3(this.transform.position.x, this.transform.position.y,-1));
+
     }
 
 
     private void CreateWall(Vector3 position)
     {
+        GameManager.gameManager.addObstacleToMaze(position);
         Instantiate(wallObject, position, Quaternion.identity);
     }
 

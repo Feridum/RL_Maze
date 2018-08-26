@@ -21,6 +21,14 @@ public class Player : MonoBehaviour
         instance.transform.SetParent(transform);
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyUp(KeyCode.R))
+        {
+            placeOnRandomPosition(false);
+        }
+    }
+
     public bool moveUp()
     {
         return this.translatePlayer(Direction.UP);
@@ -116,9 +124,9 @@ public class Player : MonoBehaviour
         return playerSurroundings;
     }
 
-    public void resetPosition()
+    public void placeOnRandomPosition(bool removeField)
     {
-        Vector3 startingPosition = gameManager.getStartingTile();
+        Vector3 startingPosition = gameManager.getRandomPosition(removeField);
         startingPosition.z = -1;
         transform.position = startingPosition;
 
@@ -138,7 +146,7 @@ public class Player : MonoBehaviour
         return isFinished;
     }
 
-    void startMove()
+    public void startMove()
     {
         isFinished = false;
         isStarted = true;
