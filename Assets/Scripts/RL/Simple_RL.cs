@@ -10,6 +10,7 @@ public class Simple_RL : MonoBehaviour
     // Use this for initialization
     Player player;
     GameManager gameManager;
+    RLManager rlManager;
     float[,] R;
     float[,] Q;
     Vector2 currentPosition;
@@ -22,7 +23,8 @@ public class Simple_RL : MonoBehaviour
     void Start()
     {
         player = transform.parent.gameObject.GetComponent<Player>();
-        this.gameManager = GameManager.gameManager;
+        gameManager = GameManager.gameManager;
+        rlManager = RLManager.rlManager;
 
         gridSize = this.gameManager.getGridSize();
         this.R = new float[(int)gridSize.x * (int)gridSize.y, 4];
@@ -34,14 +36,13 @@ public class Simple_RL : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
         if (player.isMoveFinished())
         {
             requiredLoops--;
             if(requiredLoops > 0)
             {
-                player.placeOnRandomPosition(true);
-                currentPosition = gameManager.playerStartPosition;
-                player.startMove();
+                placePlayer();
             }
             else
             {
@@ -60,6 +61,7 @@ public class Simple_RL : MonoBehaviour
 
         if (learnStart)
         {
+            rlManager.updateQ(Q);
             discoverMaze();
             getNextMoveDirection();
             fileSaved = false;
@@ -70,8 +72,18 @@ public class Simple_RL : MonoBehaviour
             requiredLoops = (int)(requiredLoopsFactor * gameManager.emptyPlacesNumber);
             learnStart = true;
         }
+        if (!learnStart && Input.GetKeyUp(KeyCode.R))
+        {
+            placePlayer();
+        }
     }
 
+    void placePlayer()
+    {
+        player.placeOnRandomPosition(true);
+        currentPosition = gameManager.playerStartPosition;
+        player.startMove();
+    }
     void fillInitialFactors()
     {
         for (int i = 0; i < R.GetLength(0); i++)
@@ -169,16 +181,17 @@ public class Simple_RL : MonoBehaviour
         for (int i = 0; i < 4; i++)
         {
             float reward = R[getPositionInArray(currentPosition), i];
+            float positionInQ = Q[getPositionInArray(currentPosition), i];
             if (reward == -100)
             {
                 QRow[i] = -1000;
-            }else if(reward == 100)
+            }else if(reward == 100 && positionInQ == 0)
             {
                 QRow[i] = 100;
             }
             else
             {
-                QRow[i] = Q[getPositionInArray(currentPosition), i];
+                QRow[i] = positionInQ;
             }
         }
 

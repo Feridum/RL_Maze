@@ -12,21 +12,14 @@ public class Player : MonoBehaviour
     Vector2 move;
     bool isFinished = false;
     bool isStarted = false;
-
+    Translation translation;
     void Start()
     {
         this.gameManager = GameManager.gameManager;
-        this.move = this.gameManager.getTileDiff();
+        translation = gameManager.getTranslationForGrid("main");
+        this.move = translation.getTileDiff();
         GameObject instance = Instantiate(playerMovementController, transform.position, Quaternion.identity);
         instance.transform.SetParent(transform);
-    }
-
-    private void Update()
-    {
-        if (Input.GetKeyUp(KeyCode.R))
-        {
-            placeOnRandomPosition(false);
-        }
     }
 
     public bool moveUp()
