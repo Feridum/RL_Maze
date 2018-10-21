@@ -29,7 +29,7 @@ public class Simple_RL : MonoBehaviour
         gridSize = this.gameManager.getGridSize();
         this.R = new float[(int)gridSize.x * (int)gridSize.y, 4];
         this.Q = new float[(int)gridSize.x * (int)gridSize.y, 4];
-        currentPosition = new Vector2(0, 0);
+        currentPosition = gameManager.playerStartPosition;
         fillInitialFactors();
     }
 
@@ -47,7 +47,7 @@ public class Simple_RL : MonoBehaviour
             else
             {
                 learnStart = false;
-                if (fileSaved)
+                if (!fileSaved)
                 {
                     FileReader file = new FileReader();
                     file.saveToFile(R, "r.txt");
@@ -70,6 +70,7 @@ public class Simple_RL : MonoBehaviour
         if (Input.GetKeyUp(KeyCode.S))
         {
             requiredLoops = (int)(requiredLoopsFactor * gameManager.emptyPlacesNumber);
+            currentPosition = gameManager.playerStartPosition;
             learnStart = true;
         }
         if (!learnStart && Input.GetKeyUp(KeyCode.R))
@@ -97,6 +98,7 @@ public class Simple_RL : MonoBehaviour
 
     void discoverMaze()
     {
+        clearRewards();
         PlayerSurroundings player = this.player.getSurroundings();
         foreach (Direction direction in player.walls)
         {
@@ -118,6 +120,15 @@ public class Simple_RL : MonoBehaviour
             case Direction.LEFT: placeFinishInRewards(Direction.LEFT); break;
         }
 
+    }
+
+
+    void clearRewards ()
+    {
+        R[getPositionInArray(currentPosition), (int)Direction.UP] = 0;
+        R[getPositionInArray(currentPosition), (int)Direction.LEFT] = 0;
+        R[getPositionInArray(currentPosition), (int)Direction.DOWN] = 0;
+        R[getPositionInArray(currentPosition), (int)Direction.RIGHT] = 0;
     }
 
     void placeWallInFactors(Direction direction)
@@ -240,6 +251,6 @@ public class Simple_RL : MonoBehaviour
 
         float reward = R[getPositionInArray(previousPosition), directionValue];
         float maxNextQValue = getQRow(currentPosition).Max();
-        Q[getPositionInArray(previousPosition), directionValue] = reward + learningRate * maxNextQValue;
+        Q[getPositionInArray(previousPosition), directionValue] = (reward + learningRate * maxNextQValue)-(float)0.5;
     }
 }

@@ -11,6 +11,7 @@ public class CreateGridObjects : MonoBehaviour {
     [SerializeField]
     private GameObject finishObject;
 
+
     GameManager gameManager;
     Translation translation;
     private Vector2 gridSize;
@@ -18,11 +19,11 @@ public class CreateGridObjects : MonoBehaviour {
         this.gameManager = GameManager.gameManager;
         translation = gameManager.getTranslationForGrid("main");
         gridSize = gameManager.getGridSize();
-        this.createPlayer();
+        this.placePlayer();
         this.createFinish();
     }
 
-    private void createPlayer()
+    private void placePlayer()
     {
         Vector3 position = new Vector3(translation.getXPosition(0), translation.getYPosition(0), -1);
         Instantiate(playerObject, position, Quaternion.identity);

@@ -46,6 +46,14 @@ namespace Assets.Scripts
 
         }
 
+        public Vector2 getTableIndexesFromPosition(Vector2 position)
+        {
+            int x = (int)(position.x - translation.x);
+            int y = Mathf.Abs((int)(position.y + translation.y));
+
+            return new Vector2(x,y); ;
+        }
+
         public Vector2 getTableIndexesFromNumber(int number)
         {
             int y = number / (int)gridSize.x;

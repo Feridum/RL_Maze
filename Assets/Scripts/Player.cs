@@ -119,10 +119,16 @@ public class Player : MonoBehaviour
 
     public void placeOnRandomPosition(bool removeField)
     {
-        Vector3 startingPosition = gameManager.getRandomPosition(removeField);
+        this.placeOnPosition(gameManager.getRandomPosition(removeField));
+
+    }
+
+    public void placeOnPosition(Vector3 position)
+    {
+        Vector3 startingPosition = position;
         startingPosition.z = -1;
         transform.position = startingPosition;
-
+        gameManager.setPlayerPositionFromVector(startingPosition);
     }
 
     void OnTriggerEnter2D(Collider2D col)

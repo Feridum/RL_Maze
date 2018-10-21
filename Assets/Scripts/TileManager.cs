@@ -7,9 +7,12 @@ public class TileManager : MonoBehaviour {
     [SerializeField]
     private GameObject wallObject;
 
-	// Use this for initialization
-	void Start () {
+    Player player;
+
+    // Use this for initialization
+    void Start () {
         calculateFloorDimesions();
+        player = Object.FindObjectOfType<Player>();
     }
 	
 	// Update is called once per frame
@@ -17,10 +20,17 @@ public class TileManager : MonoBehaviour {
 		
 	}
 
-    private void OnMouseUp()
+    private void OnMouseOver()
     {
-        CreateWall(new Vector3(this.transform.position.x, this.transform.position.y,-1));
-
+        if (Input.GetMouseButtonUp(0))
+        {
+            CreateWall(new Vector3(this.transform.position.x, this.transform.position.y, -1));
+        }
+        else if (Input.GetMouseButtonUp(1))
+        {
+            player.placeOnPosition(new Vector3(this.transform.position.x, this.transform.position.y, -1));
+        }
+       
     }
 
 

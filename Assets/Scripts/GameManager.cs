@@ -78,8 +78,18 @@ public class GameManager : MonoBehaviour {
             emptyPlaces.Sort();
         }
 
-        playerStartPosition = translation.getTableIndexesFromNumber(number);
         return translation.getCoordinatesFromPositionNumber(number);
+    }
+
+
+    public void setPlayerPositionFromVector(Vector2 position)
+    {
+        setPlayerPosition(translation.getTableIndexesFromPosition(position));
+    }
+
+    public void setPlayerPosition(Vector2 position)
+    {
+        playerStartPosition = position;
     }
 
     public Vector2 getGridSize()
