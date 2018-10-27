@@ -17,6 +17,7 @@ public class Simple_RL : MonoBehaviour
     Vector2 gridSize;
     float learningRate = 0.6f;
     bool learnStart = false;
+    bool moveStart = false;
     float requiredLoopsFactor = 0.8f;
     int requiredLoops = 0;
     bool fileSaved = false; 
@@ -39,10 +40,11 @@ public class Simple_RL : MonoBehaviour
 
         if (player.isMoveFinished())
         {
+            moveStart = false;
             requiredLoops--;
             if(requiredLoops > 0)
             {
-                placePlayer();
+                placePlayer(true);
             }
             else
             {
@@ -59,7 +61,7 @@ public class Simple_RL : MonoBehaviour
         }
 
 
-        if (learnStart)
+        if (moveStart)
         {
             rlManager.updateQ(Q);
             discoverMaze();
@@ -67,22 +69,30 @@ public class Simple_RL : MonoBehaviour
             fileSaved = false;
         }
 
-        if (Input.GetKeyUp(KeyCode.S))
+        if (Input.GetKeyUp(KeyCode.L))
         {
             requiredLoops = (int)(requiredLoopsFactor * gameManager.emptyPlacesNumber);
-            currentPosition = gameManager.playerStartPosition;
             learnStart = true;
+            placePlayer();
         }
-        if (!learnStart && Input.GetKeyUp(KeyCode.R))
+        if (Input.GetKeyUp(KeyCode.S))
         {
             placePlayer();
         }
+        if (!learnStart && Input.GetKeyUp(KeyCode.R))
+        {
+            placePlayer(true);
+        }
     }
 
-    void placePlayer()
+    void placePlayer(bool placeOnRandom = false)
     {
-        player.placeOnRandomPosition(true);
+        if (placeOnRandom)
+        {
+            player.placeOnRandomPosition(true);
+        }
         currentPosition = gameManager.playerStartPosition;
+        moveStart = true;
         player.startMove();
     }
     void fillInitialFactors()

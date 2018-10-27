@@ -6,17 +6,12 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour {
 
-    [SerializeField]
-    private Vector2 gridSize;
-
-    [SerializeField]
-    private Vector2 gridOffset;
-
     public static GameManager gameManager = null;
     private List<int> emptyPlaces;
     private List<GridTranslation> gridTranslations = new List<GridTranslation>();
     public Vector2 playerStartPosition = new Vector2(0, 0);
     Translation translation;
+    GridManager gridManager;
     public int emptyPlacesNumber {
         get
         {
@@ -34,12 +29,16 @@ public class GameManager : MonoBehaviour {
         }
         else if (gameManager != this)
             Destroy(gameObject);
+    }
 
-        DontDestroyOnLoad(gameObject);
+    private void Start()
+    {
+        gridManager = GridManager.gridManager;
     }
 
     public void initializeParametrs()
     {
+        Vector2 gridSize = this.getGridSize();
         emptyPlaces = Enumerable.Range(1, (int)gridSize.x * (int)gridSize.y - 1).ToList();
     }
     public void setTranslation(string name, Translation translation)
@@ -94,12 +93,13 @@ public class GameManager : MonoBehaviour {
 
     public Vector2 getGridSize()
     {
-        return this.gridSize;
+        return gridManager.getGridSize();
     }
 
     public Vector2 getGridOffset()
     {
-        return this.gridOffset;
+        return gridManager.getGridOffset();
     }
+
 
 }

@@ -12,7 +12,7 @@ namespace Assets.Scripts
         public void saveToFile(float[,] array, string path = "test.txt")
         {
 
-            StreamWriter file = new StreamWriter("./Assets/"+path);
+            StreamWriter file = new StreamWriter("./"+path);
 
             int iLength = array.GetLength(0);
             int jLength = array.GetLength(1);
