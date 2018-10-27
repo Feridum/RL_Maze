@@ -16,8 +16,6 @@ public class RLManager : MonoBehaviour {
         }
         else if (rlManager != this)
             Destroy(gameObject);
-
-        DontDestroyOnLoad(gameObject);
     }
 
     // Update is called once per frame
