@@ -30,7 +30,7 @@ namespace Assets.Scripts
 
         public float[,] readFromFile(string path = "test.txt")
         {
-            string[] readText = File.ReadAllLines("./Assets/" + path);
+            string[] readText = File.ReadAllLines("./" + path);
             int length = readText.Length;
 
             float[,] array = new float[length, length];

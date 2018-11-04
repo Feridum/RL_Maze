@@ -34,12 +34,12 @@ public class Simple_RL : MonoBehaviour
         fillInitialFactors();
     }
 
-    // Update is called once per frame
     void Update()
     {
 
         if (player.isMoveFinished())
         {
+            gameManager.setPlayerPosition(currentPosition);
             moveStart = false;
             requiredLoops--;
             if(requiredLoops > 0)
@@ -69,13 +69,13 @@ public class Simple_RL : MonoBehaviour
             fileSaved = false;
         }
 
-        if (Input.GetKeyUp(KeyCode.L))
+        if (!learnStart && Input.GetKeyUp(KeyCode.L))
         {
             requiredLoops = (int)(requiredLoopsFactor * gameManager.emptyPlacesNumber);
             learnStart = true;
             placePlayer();
         }
-        if (Input.GetKeyUp(KeyCode.S))
+        if (!learnStart && Input.GetKeyUp(KeyCode.S))
         {
             placePlayer();
         }

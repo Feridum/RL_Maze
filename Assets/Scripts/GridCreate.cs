@@ -32,7 +32,7 @@ namespace Assets
             gridOffset = gameManager.getGridOffset();
 
             calculateFloorDimesions();
-            transform.position = getInitialPosition(gridSize.x);
+            transform.position = getInitialPosition();
             translation = new Translation(transform.position, gridSize, gridOffset, tileObject.GetComponent<Renderer>().bounds.size);
             this.setBoardConstants();
 
@@ -63,7 +63,8 @@ namespace Assets
             float xPos = translation.getXPosition(x);
             float yPos = translation.getYPosition(y);
 
-            Instantiate(tileObject, new Vector2(xPos, yPos), Quaternion.identity);
+            GameObject block = Instantiate(tileObject, new Vector2(xPos, yPos), Quaternion.identity);
+            block.transform.parent = gameObject.transform;
         }
 
         private void calculateFloorDimesions()
@@ -78,12 +79,12 @@ namespace Assets
 
         private void OnDrawGizmos()
         {
-            GameManager gameManager = (GameManager)FindObjectOfType(typeof(GameManager));
-            Vector3 gridSize = gameManager.getGridSize();
-            Gizmos.DrawWireCube(getInitialPosition(gridSize.x), gridSize);
+            GridManager gridManager = (GridManager)FindObjectOfType(typeof(GridManager));
+            Vector3 gridSize = gridManager.getGridSize();
+            Gizmos.DrawWireCube(getInitialPosition(), gridSize);
         }
 
-        private Vector3 getInitialPosition(float gridSizeX)
+        private Vector3 getInitialPosition()
         {
             Camera cam = Camera.main;
             int size = (int)(cam.orthographicSize / 2);

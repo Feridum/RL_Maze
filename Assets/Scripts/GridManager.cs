@@ -17,22 +17,12 @@ public class GridManager : MonoBehaviour {
         if (gridManager == null)
         {
             gridManager = this;
-
         }
         else if (gridManager != this)
             Destroy(gameObject);
 
         DontDestroyOnLoad(gameObject);
     }
-
-    void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
 
     public void setGridSize(Vector2 size)
     {

@@ -14,11 +14,6 @@ public class TileManager : MonoBehaviour {
         calculateFloorDimesions();
         player = Object.FindObjectOfType<Player>();
     }
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
 
     private void OnMouseOver()
     {

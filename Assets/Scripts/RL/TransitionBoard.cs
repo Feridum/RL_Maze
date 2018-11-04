@@ -58,6 +58,7 @@ public class TransitionBoard : MonoBehaviour {
         Vector3 arrowPosition = translation.getCoordinatesFromPositionNumber(position);
         arrowPosition.z = -1;
         placedArrows[position] = Instantiate(arrow, arrowPosition, Quaternion.Euler(0, 0, getRotationForDirection(direction)));
+        placedArrows[position].transform.parent = gameObject.transform;
     }
 
     int getRotationForDirection(int direction)

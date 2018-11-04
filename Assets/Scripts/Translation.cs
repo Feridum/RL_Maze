@@ -15,7 +15,7 @@ namespace Assets.Scripts
         public Translation(Vector2 gridPosition, Vector2 gridSize, Vector2 gridOffset, Vector2 tileSize)
         {
             translation.x = gridPosition.x - gridSize.x / 2 + tileSize.x / 2;
-            translation.y = gridPosition.y - gridSize.y / 2 - tileSize.y / 2;
+            translation.y = gridPosition.y + gridSize.y / 2 - tileSize.y / 2;
 
             this.gridOffset = gridOffset;
             this.gridSize = gridSize;
@@ -28,13 +28,13 @@ namespace Assets.Scripts
 
         public float getYPosition(int y)
         {
-            return -(y + gridOffset.y * y) - translation.y;
+            return -(y + gridOffset.y * y) + translation.y;
         }
 
         public int calulacteFieldNumber(Vector2 position)
         {
             int x = (int)(position.x - translation.x);
-            int y = Mathf.Abs((int)(position.y + translation.y));
+            int y = Mathf.Abs((int)(position.y - translation.y));
 
             return x + y * (int)gridSize.x;
         }
@@ -49,7 +49,7 @@ namespace Assets.Scripts
         public Vector2 getTableIndexesFromPosition(Vector2 position)
         {
             int x = (int)(position.x - translation.x);
-            int y = Mathf.Abs((int)(position.y + translation.y));
+            int y = Mathf.Abs((int)(position.y - translation.y));
 
             return new Vector2(x,y); ;
         }

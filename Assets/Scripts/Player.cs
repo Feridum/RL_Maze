@@ -95,7 +95,6 @@ public class Player : MonoBehaviour
     {
         PlayerSurroundings playerSurroundings = new PlayerSurroundings();
 
-
         foreach (Direction direction in System.Enum.GetValues(typeof(Direction)))
         {
             Collider2D finish = Physics2D.OverlapCircle((Vector2)transform.position + getTranslation(direction), (float)0.1, 1 << LayerMask.NameToLayer("Finish"));

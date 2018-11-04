@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,7 +40,7 @@ public class GameManager : MonoBehaviour {
     public void initializeParametrs()
     {
         Vector2 gridSize = this.getGridSize();
-        emptyPlaces = Enumerable.Range(1, (int)gridSize.x * (int)gridSize.y - 1).ToList();
+        emptyPlaces = Enumerable.Range(0, (int)gridSize.x * (int)gridSize.y - 1).ToList();
     }
     public void setTranslation(string name, Translation translation)
     {
@@ -74,7 +75,6 @@ public class GameManager : MonoBehaviour {
         if (removeField)
         {
             emptyPlaces.Remove(number);
-            emptyPlaces.Sort();
         }
 
         return translation.getCoordinatesFromPositionNumber(number);
@@ -84,6 +84,7 @@ public class GameManager : MonoBehaviour {
     public void setPlayerPositionFromVector(Vector2 position)
     {
         setPlayerPosition(translation.getTableIndexesFromPosition(position));
+       
     }
 
     public void setPlayerPosition(Vector2 position)
