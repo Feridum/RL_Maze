@@ -29,23 +29,32 @@ public class TransitionBoard : MonoBehaviour {
     void fillTrasitionBoard()
     {
         float[,] Q= rlManager.getQ();
+        float[,] R = rlManager.getR();
 
         if (Q != null)
         {
             for (int i = 0; i < Q.GetLength(0); i++)
             {
-                float max = Q[i, 0];
-                int maxIndex = 0;
-                for(int j = 1; j<Q.GetLength(1); j++)
+                float max = -100;
+                int maxIndex = -100;
+                bool isOnlyZero = true;
+                for(int j = 0; j<Q.GetLength(1); j++)
                 {
-                    if (Q[i, j] > max)
+                    if (R[i, j] != -100)
                     {
-                        max = Q[i, j];
-                        maxIndex = j;
+                        if (Q[i, j] != 0)
+                        {
+                            isOnlyZero = false;
+                        }
+                        if (Q[i, j] >= max)
+                        {
+                            max = Q[i, j];
+                            maxIndex = j;
+                        }
                     }
                 }
 
-                if (max != 0)
+                if (max != 0 || !isOnlyZero)
                     placeArrow(i,maxIndex);
             }
         }

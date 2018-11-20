@@ -64,6 +64,7 @@ public class Simple_RL : MonoBehaviour
         if (moveStart)
         {
             rlManager.updateQ(Q);
+            rlManager.updateR(R);
             discoverMaze();
             getNextMoveDirection();
             fileSaved = false;

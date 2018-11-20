@@ -6,6 +6,7 @@ public class RLManager : MonoBehaviour {
 
     public static RLManager rlManager = null;
     float[,] Q = null;
+    float[,] R = null;
 
     void Awake()
     {
@@ -24,8 +25,18 @@ public class RLManager : MonoBehaviour {
         this.Q = Q;
     }
 
+    public void updateR(float[,] R)
+    {
+        this.R = R;
+    }
+
     public float[,] getQ()
     {
         return Q;
+    }
+
+    public float[,] getR()
+    {
+        return R;
     }
 }

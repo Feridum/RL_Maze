@@ -3,16 +3,31 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using UnityEngine;
 
 namespace Assets.Scripts
 {
     class FileReader
     {
-        
+        string  getPath(string pathAddress)
+        {
+            string path = "";
+            if (Application.platform == RuntimePlatform.WindowsPlayer || Application.platform == RuntimePlatform.WindowsEditor)
+            {
+                path = "./" + pathAddress;
+            }
+            else
+            {
+                path = Environment.GetFolderPath(Environment.SpecialFolder.Personal) +'/'+ pathAddress;
+            } // if
+            return path;
+        }
+
+
         public void saveToFile(float[,] array, string path = "test.txt")
         {
 
-            StreamWriter file = new StreamWriter("./"+path);
+            StreamWriter file = new StreamWriter(getPath(path));
 
             int iLength = array.GetLength(0);
             int jLength = array.GetLength(1);
@@ -30,7 +45,7 @@ namespace Assets.Scripts
 
         public float[,] readFromFile(string path = "test.txt")
         {
-            string[] readText = File.ReadAllLines("./" + path);
+            string[] readText = File.ReadAllLines(getPath(path));
             int length = readText.Length;
 
             float[,] array = new float[length, length];
