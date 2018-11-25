@@ -55,6 +55,16 @@ public class UIManager : MonoBehaviour {
         float xSizeValue = float.Parse(xOffset.text);
         float ySizeValue = float.Parse(yOffset.text);
 
+        if(xSizeValue < 0)
+        {
+            xSizeValue = -xSizeValue;
+        }
+
+        if (ySizeValue < 0)
+        {
+            ySizeValue = -ySizeValue;
+        }
+
         gridManager.setGridOffset(new Vector2(xSizeValue, ySizeValue));
     }
 }
