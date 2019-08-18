@@ -11,27 +11,63 @@ public class CreateGridObjects : MonoBehaviour {
     [SerializeField]
     private GameObject finishObject;
 
+    [SerializeField]
+    private GameObject wallObject;
+
 
     GameManager gameManager;
+    GridManager gridManager;
     Translation translation;
-    private Vector2 gridSize;
+
     void Start () {
         this.gameManager = GameManager.gameManager;
+        this.gridManager = GridManager.gridManager;
         translation = gameManager.getTranslationForGrid("main");
-        gridSize = gameManager.getGridSize();
-        this.placePlayer();
-        this.createFinish();
+
+        this.createMaze();
     }
 
-    private void placePlayer()
+    private void placePlayer(int x, int y)
     {
-        Vector3 position = new Vector3(translation.getXPosition(0), translation.getYPosition(0), -1);
+        Vector3 position = new Vector3(translation.getXPosition(x), translation.getYPosition(y), -1);
+        gameManager.setPlayerPosition(new Vector2(x,y));
         Instantiate(playerObject, position, Quaternion.identity);
     }
 
-    private void createFinish()
+    private void createFinish(int x, int y)
     {
-        Vector3 position = new Vector3(translation.getXPosition((int)gridSize.x - 1), translation.getYPosition((int)gridSize.y - 1), -1);
+        Vector3 position = new Vector3(translation.getXPosition(x), translation.getYPosition(y), -1);
         Instantiate(finishObject, position, Quaternion.identity);
     }
+
+
+    private void createMaze()
+    {
+        string[] lines = gridManager.getMazeInformation();
+        int column = 0;
+        for (int row =0; row < 10; row++)
+        {
+            column = 0;
+            foreach(char c in lines[row])
+            {
+                if(c == GridManager.emptyPlace) { }
+                else if(c == GridManager.wall)
+                {
+                    Vector3 position = new Vector3(translation.getXPosition(column), translation.getYPosition(row), -1);
+                    gameManager.addObstacleToMaze(position);
+                    Instantiate(wallObject, position, Quaternion.identity);
+                }else if(c == GridManager.start)
+                {
+                    placePlayer(column, row);
+                }
+                else if(c == GridManager.end)
+                {
+                    createFinish(column, row);
+                }
+
+                column = column + 1;
+            }
+        }
+    }
+
 }

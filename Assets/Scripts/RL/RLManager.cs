@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Assets.Scripts.RL;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,6 +8,7 @@ public class RLManager : MonoBehaviour {
     public static RLManager rlManager = null;
     float[,] Q = null;
     float[,] R = null;
+    private RLExperimentParameters rLExperimentParameters { get; set; }
 
     void Awake()
     {

@@ -24,6 +24,7 @@ namespace Assets
         float yTranslation;
 
         Translation translation;
+        string[] fileLines;
 
         void Start()
         {

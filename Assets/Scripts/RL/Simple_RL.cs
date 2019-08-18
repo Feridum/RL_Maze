@@ -15,27 +15,37 @@ public class Simple_RL : MonoBehaviour
     float[,] Q;
     Vector2 currentPosition;
     Vector2 gridSize;
-    float learningRate = 0.6f;
+    float futureStepsRate = 0.6f;
+    float learningRate = 1.0f;
     bool learnStart = false;
     bool moveStart = false;
     float requiredLoopsFactor = 0.8f;
     int requiredLoops = 0;
-    bool fileSaved = false; 
+    bool fileSaved = false;
+    Vector2 initialPosition;
     void Start()
     {
         player = transform.parent.gameObject.GetComponent<Player>();
         gameManager = GameManager.gameManager;
         rlManager = RLManager.rlManager;
-
+        initialPosition = gameManager.playerStartPosition;
         gridSize = this.gameManager.getGridSize();
+
+        startNewEpoche();
+    }
+
+    void startNewEpoche()
+    {
         this.R = new float[(int)gridSize.x * (int)gridSize.y, 4];
         this.Q = new float[(int)gridSize.x * (int)gridSize.y, 4];
-        currentPosition = gameManager.playerStartPosition;
+        currentPosition = initialPosition;
         fillInitialFactors();
     }
 
     void Update()
     {
+        rlManager.updateQ(Q);
+        rlManager.updateR(R);
 
         if (player.isMoveFinished())
         {
@@ -62,9 +72,7 @@ public class Simple_RL : MonoBehaviour
 
 
         if (moveStart)
-        {
-            rlManager.updateQ(Q);
-            rlManager.updateR(R);
+        { 
             discoverMaze();
             getNextMoveDirection();
             fileSaved = false;
@@ -262,6 +270,6 @@ public class Simple_RL : MonoBehaviour
 
         float reward = R[getPositionInArray(previousPosition), directionValue];
         float maxNextQValue = getQRow(currentPosition).Max();
-        Q[getPositionInArray(previousPosition), directionValue] = (reward + learningRate * maxNextQValue)-(float)0.5;
+        Q[getPositionInArray(previousPosition), directionValue] = (1-learningRate)* Q[getPositionInArray(previousPosition), directionValue] + learningRate *(reward + futureStepsRate * maxNextQValue)-(float)0.5;
     }
 }
