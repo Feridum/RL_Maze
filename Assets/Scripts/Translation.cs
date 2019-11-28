@@ -46,6 +46,11 @@ namespace Assets.Scripts
 
         }
 
+        public Vector2 getCoordinatesFromTablePosition(Vector2 position)
+        {
+            return new Vector2(getXPosition((int)position.x), getYPosition((int)position.y));
+        }
+
         public Vector2 getTableIndexesFromPosition(Vector2 position)
         {
             int x = (int)(position.x - translation.x);

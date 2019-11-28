@@ -122,6 +122,14 @@ public class Player : MonoBehaviour
 
     }
 
+    public void placeOnStartingPosition()
+    {
+        Vector2 position = gameManager.playerStartPosition;
+        Vector3 startingPosition = translation.getCoordinatesFromTablePosition(position);
+        startingPosition.z = -1;
+        transform.position = startingPosition;
+    }
+
     public void placeOnPosition(Vector3 position)
     {
         Vector3 startingPosition = position;

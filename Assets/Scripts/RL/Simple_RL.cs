@@ -11,6 +11,7 @@ public class Simple_RL : MonoBehaviour
     Player player;
     GameManager gameManager;
     RLManager rlManager;
+    DataCollectionManager dataCollectionManager;
     float[,] R;
     float[,] Q;
     Vector2 currentPosition;
@@ -19,15 +20,17 @@ public class Simple_RL : MonoBehaviour
     float learningRate = 1.0f;
     bool learnStart = false;
     bool moveStart = false;
-    float requiredLoopsFactor = 0.8f;
-    int requiredLoops = 0;
     bool fileSaved = false;
     Vector2 initialPosition;
+
+
+    int stepsToFinish = 0;
     void Start()
     {
         player = transform.parent.gameObject.GetComponent<Player>();
         gameManager = GameManager.gameManager;
         rlManager = RLManager.rlManager;
+        dataCollectionManager = DataCollectionManager.dataCollectionManager;
         initialPosition = gameManager.playerStartPosition;
         gridSize = this.gameManager.getGridSize();
 
@@ -49,12 +52,20 @@ public class Simple_RL : MonoBehaviour
 
         if (player.isMoveFinished())
         {
+            rlManager.saveIterationInformation(stepsToFinish);
+            stepsToFinish = 0;
             gameManager.setPlayerPosition(currentPosition);
             moveStart = false;
-            requiredLoops--;
-            if(requiredLoops > 0)
+            if(rlManager.shouldStartNewIteration())
             {
-                placePlayer(true);
+                gameManager.setPlayerPosition(initialPosition);
+                placePlayer(false);
+            }
+            else if (rlManager.shouldStartNewEpoche())
+            {
+                gameManager.setPlayerPosition(initialPosition);
+                startNewEpoche();
+                placePlayer(false);
             }
             else
             {
@@ -64,6 +75,7 @@ public class Simple_RL : MonoBehaviour
                     FileReader file = new FileReader();
                     file.saveToFile(R, "r.txt");
                     file.saveToFile(Q, "q.txt");
+                    rlManager.saveResults();
                     fileSaved = true;
                 }
                 player.startMove();
@@ -75,12 +87,12 @@ public class Simple_RL : MonoBehaviour
         { 
             discoverMaze();
             getNextMoveDirection();
+            stepsToFinish++;
             fileSaved = false;
         }
 
         if (!learnStart && Input.GetKeyUp(KeyCode.L))
         {
-            requiredLoops = (int)(requiredLoopsFactor * gameManager.emptyPlacesNumber);
             learnStart = true;
             placePlayer();
         }
@@ -99,6 +111,10 @@ public class Simple_RL : MonoBehaviour
         if (placeOnRandom)
         {
             player.placeOnRandomPosition(true);
+        }
+        else
+        {
+            player.placeOnStartingPosition();
         }
         currentPosition = gameManager.playerStartPosition;
         moveStart = true;

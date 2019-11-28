@@ -63,5 +63,16 @@ namespace Assets.Scripts
             return array;
         }
 
+        public StreamWriter startFileWriting(string path = "test.txt")
+        {
+            return new StreamWriter(getPath(path));
+        }
+
+        public void saveLine(StreamWriter file, string line)
+        {
+            file.Write("{0}", line);
+            file.WriteLine();
+        }
+
     }
 }
